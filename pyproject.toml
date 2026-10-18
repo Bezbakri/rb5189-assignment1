@@ -1,0 +1,20 @@
+[project]
+name = "rb5189-sscs-assignment"
+version = "0.1.0"
+description = "Assignment work for NYU CS-GY 9223"
+authors = [
+    {name = "Bezbakri"}
+]
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "black (>=26.10.1,<27.0.0)",
+    "flake8 (>=7.4.1,<8.0.0)",
+    "mypy (>=2.4.0,<3.0.0)",
+    "bandit (>=1.9.4,<2.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
