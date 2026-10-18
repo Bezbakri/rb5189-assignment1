@@ -64,6 +64,9 @@ def inclusion(log_index, artifact_filepath, debug=False):
     # if debug:
     #     print(log_body)
     #     print(log_body_json)
+    if "spec" not in log_body_json or "signature" not in log_body_json["spec"]:
+        print("Given log index does not have a signature")
+        return
     signature_b64 = log_body_json["spec"]["signature"]["content"]
     signature = base64.b64decode(signature_b64)
     public_key_b64 = log_body_json["spec"]["signature"]["publicKey"]["content"]
