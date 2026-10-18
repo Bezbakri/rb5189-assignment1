@@ -195,6 +195,8 @@ def main():
         checkpoint = get_latest_checkpoint(debug)
         print(json.dumps(checkpoint, indent=4))
     if args.inclusion:
+        if not args.artifact:
+            print("please specify artifact filepath for inclusion")
         inclusion(args.inclusion, args.artifact, debug)
     if args.consistency:
         if not args.tree_id:
