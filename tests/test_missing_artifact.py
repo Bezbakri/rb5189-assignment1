@@ -1,0 +1,15 @@
+import subprocess
+
+import main
+
+
+def test_missing_artifact():
+    log_index = "3042934851"
+    result = subprocess.run(
+        ["python", "main.py", "--inclusion", log_index],
+        capture_output=True,
+        text=True,
+    )
+    output = result.stdout
+
+    assert output == "please specify artifact filepath for inclusion\n"
