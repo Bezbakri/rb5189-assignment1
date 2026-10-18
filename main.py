@@ -17,13 +17,14 @@ def get_log_entry(log_index, debug=False):
     # Get the request data
     if log_index < 1:
         raise ValueError("Needs a positive log index")
+    rekor_url = "https://rekor.sigstore.dev/api/v1/log/entries"
     check_log_index = requests.get(
-        "https://rekor.sigstore.dev/api/v1/log/entries", params={"logIndex": log_index}
+        rekor_url, params={"logIndex": log_index}, timeout=30
     )
     if check_log_index.status_code == 200:
         log_json_data = check_log_index.json()
         log_uuid = list(log_json_data.keys())[0]
-        if debug == True:
+        if debug is True:
             print("Got a 200")
             # print(log_uuid)
             # print(log_json_data[log_uuid]['body'])
@@ -64,7 +65,10 @@ def inclusion(log_index, artifact_filepath, debug=False):
     # if debug:
     #     print(log_body)
     #     print(log_body_json)
-    if "spec" not in log_body_json or "signature" not in log_body_json["spec"]:
+    if "spec" not in log_body_json:
+        print("Given log index does not have a signature")
+        return
+    if "signature" not in log_body_json["spec"]:
         print("Given log index does not have a signature")
         return
     signature_b64 = log_body_json["spec"]["signature"]["content"]
@@ -75,15 +79,16 @@ def inclusion(log_index, artifact_filepath, debug=False):
     if debug:
         print(public_key.decode())
     verify_artifact_signature(signature, public_key, artifact_filepath)
-    index, tree_size, hashes, root_hash = get_verification_proof(log_index)
+    index, tree_size, hashes, root = get_verification_proof(log_index)
     leaf_hash = compute_leaf_hash(log_body_b64)
-    verify_inclusion(DefaultHasher, index, tree_size, leaf_hash, hashes, root_hash)
+    verify_inclusion(DefaultHasher, index, tree_size, leaf_hash, hashes, root)
     print("Offline verification successful")
 
 
 def get_latest_checkpoint(debug=False):
     # TODO: Fetch the latest checkpoint from rekor
-    latest_checkpoint = requests.get("https://rekor.sigstore.dev/api/v1/log")
+    rekor_url = "https://rekor.sigstore.dev/api/v1/log"
+    latest_checkpoint = requests.get(rekor_url, timeout=30)
     if latest_checkpoint.status_code == 200:
         latest_checkpoint_json = latest_checkpoint.json()
         if debug:
@@ -119,6 +124,7 @@ def consistency(prev_checkpoint, debug=False):
         proof_req = requests.get(
             "https://rekor.sigstore.dev/api/v1/log/proof",
             params={"firstSize": prev_tree_size, "lastSize": latest_tree_size},
+            timeout=30,
         )
         if proof_req.status_code == 200:
             proof_req_json = proof_req.json()
@@ -177,14 +183,15 @@ def main():
         "--tree-id", help="Tree ID for consistency proof", required=False
     )
     parser.add_argument(
-        "--tree-size", help="Tree size for consistency proof", required=False, type=int
+        "--tree-size",
+        help="Tree size for\
+              consistency proof",
+        required=False,
+        type=int,
     )
     parser.add_argument(
         "--root-hash", help="Root hash for consistency proof", required=False
     )
-    # # For testing
-    # parser.add_argument('--log-index', help='Log index for get details of log entry',
-    #                         required=False)
     args = parser.parse_args()
     if args.debug:
         debug = True
