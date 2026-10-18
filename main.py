@@ -15,6 +15,8 @@ import base64
 def get_log_entry(log_index, debug=False):
     # TODO: verify that log index value is sane
     # Get the request data
+    if log_index < 1:
+        raise ValueError("Needs a positive log index")
     check_log_index = requests.get(
         "https://rekor.sigstore.dev/api/v1/log/entries", params={"logIndex": log_index}
     )
