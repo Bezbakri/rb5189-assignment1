@@ -111,7 +111,7 @@ def consistency(prev_checkpoint, debug=False):
         print("Previous size cannot be bigger than latest size")
         return
     if prev_tree_size == latest_tree_size:
-        proof = None
+        proof = []
     else:
         proof_req = requests.get(
             "https://rekor.sigstore.dev/api/v1/log/proof",
