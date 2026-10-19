@@ -11,7 +11,7 @@ import json
 import os
 import base64
 
-AWS_TOKEN = "AKIAIOSFODNN7EXAMPLE"
+AWS_TOKEN_CHANGED = "AKIAIOSFODNN7EXAMPLE"
 
 def get_log_entry(log_index, debug=False):
     # TODO: verify that log index value is sane

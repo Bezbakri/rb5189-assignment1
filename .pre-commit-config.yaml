@@ -4,6 +4,6 @@ repos:
       - id: trufflehog
         name: TruffleHog
         description: Detect secrets in your data with TruffleHog.
-        entry: trufflehog git file://. --since-commit HEAD --results=verified --fail --trust-local-git-config --no-update
+        entry: trufflehog git file://. --since-commit HEAD --no-verification --fail --trust-local-git-config --no-update
         language: golang
         pass_filenames: false
