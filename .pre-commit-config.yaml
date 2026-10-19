@@ -1,0 +1,9 @@
+repos:
+  - repo: local
+    hooks:
+      - id: trufflehog
+        name: TruffleHog
+        description: Detect secrets in your data with TruffleHog.
+        entry: trufflehog git file://. --since-commit HEAD --no-verification --fail --trust-local-git-config --no-update
+        language: system
+        pass_filenames: false
